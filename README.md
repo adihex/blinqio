@@ -11,7 +11,7 @@
 
 ### Backend
 
-- I have used Expree.js to create a server and MongoDB with Mongoose ODM to enable persistence through a database.
+- I have used Express.js to create a server and MongoDB with Mongoose ODM to enable persistence through a database.
 - The server uses middlewares extensively to check if the user is authenticated.
 
 ### Data flow:
