@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
+  const { setIsAuthenticated } = useAuth();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -18,12 +19,12 @@ const Login: React.FC = () => {
           password,
         }
       );
-
       // Store the token in localStorage for future requests
       localStorage.setItem("token", response.data.token);
+      setIsAuthenticated(true);
       navigate("/tasks"); // Redirect to the tasks page
     } catch (error) {
-      console.error(error.message);
+      console.error(error);
       setError("Invalid username or password");
     }
   };

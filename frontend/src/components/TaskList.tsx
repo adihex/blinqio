@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Import Axios for API calls
+import React, { useState, useEffect } from "react";
+import axios from "axios"; // Import Axios for API calls
 
 interface Task {
   _id: string;
@@ -9,49 +9,52 @@ interface Task {
 
 const TaskList: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [newTaskTitle, setNewTaskTitle] = useState("");
 
   useEffect(() => {
     fetchTasks();
   }, []);
 
+  const token = localStorage.getItem("token"); // Fetch the token from localStorage
+
   const fetchTasks = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:4000/tasks', {
-        headers: { Authorization: `Bearer ${token}` },
+      const response = await axios.get("http://localhost:4000/api/tasks", {
+        headers: {
+          Authorization: `Bearer ${token}`, // Attach the token to the Authorization header
+        },
       });
       setTasks(response.data); // Set the tasks fetched from the backend
     } catch (error) {
-      console.error('Failed to fetch tasks:', error);
+      console.error("Failed to fetch tasks:", error.message);
     }
   };
 
   const handleCreateTask = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       const response = await axios.post(
-        'http://localhost:4000/tasks',
+        "http://localhost:4000/api/tasks",
         { title: newTaskTitle },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setTasks([...tasks, response.data]); // Add the newly created task to the list
-      setNewTaskTitle('');
+      setNewTaskTitle("");
     } catch (error) {
-      console.error('Failed to create task:', error);
+      console.error("Failed to create task:", error.message);
     }
   };
 
   const handleDeleteTask = async (taskId: string) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:4000/tasks/${taskId}`, {
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://localhost:4000/api/tasks/${taskId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTasks(tasks.filter((task) => task._id !== taskId)); // Remove the deleted task from the list
     } catch (error) {
-      console.error('Failed to delete task:', error);
+      console.error("Failed to delete task:", error);
     }
   };
 
@@ -67,23 +70,33 @@ const TaskList: React.FC = () => {
           placeholder="Enter a new task"
           required
         />
-        <button type="submit" className="mt-2 w-full bg-blue-600 text-white py-2 rounded">
+        <button
+          type="submit"
+          className="mt-2 w-full bg-blue-600 text-white py-2 rounded"
+        >
           Add Task
         </button>
       </form>
-      <ul className="space-y-2">
-        {tasks.map((task) => (
-          <li key={task._id} className="flex justify-between items-center bg-white p-2 rounded shadow">
-            <span>{task.title}</span>
-            <button
-              onClick={() => handleDeleteTask(task._id)}
-              className="bg-red-600 text-white px-2 py-1 rounded"
+      {tasks.length === 0 ? ( // Check if there are no tasks
+        <p className="text-gray-500">No tasks available. Add a task!</p>
+      ) : (
+        <ul className="space-y-2">
+          {tasks.map((task) => (
+            <li
+              key={task._id}
+              className="flex justify-between items-center bg-white p-2 rounded shadow"
             >
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
+              <span>{task.title}</span>
+              <button
+                onClick={() => handleDeleteTask(task._id)}
+                className="bg-red-600 text-white px-2 py-1 rounded"
+              >
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
