@@ -16,10 +16,7 @@ const PORT = process.env.PORT || 4000;
 // Connect to MongoDB
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_DB_URI ||"mongodb+srv://petechatty:HYal8seQzoCiRH1E@blinqioassessment.ur0tf.mongodb.net/?retryWrites=true&w=majority&appName=blinqIOAssessment",{
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+        await mongoose.connect(process.env.MONGO_DB_URI ||"mongodb+srv://petechatty:HYal8seQzoCiRH1E@blinqioassessment.ur0tf.mongodb.net/?retryWrites=true&w=majority&appName=blinqIOAssessment");
         console.log('Connected to Database successfully!');
     } catch (error) {
         console.error(`MongoDB connection error: ${error}`);
